@@ -1,5 +1,7 @@
+import { formatDateString } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
+import { format } from "path";
 
 interface Props {
   id: string;
@@ -96,7 +98,30 @@ const ThreadCard = ({ id, currentUserId, parentId, content, author, community, c
             </div>
           </div>
         </div>
+
+        {/* TODO: Delete thread */}
+        {/* TODO: Show comment logos */}
       </div>
+      {!isComment && community && (
+        <Link
+          href={`/communities/${community.id}`}
+          className="mt-5 flex items-center"
+        >
+          <p className="text-subtle-medium text-gray-1">
+            {formatDateString(createdAt)} - {community.name} Community
+          </p>
+
+          <div className="relative flex flex-col w-4 h-4 ">
+            <Image
+              src={community.image}
+              alt={community.name}
+              width={14}
+              height={14}
+              className="ml-1 rounded-full object-fill"
+            />
+          </div>
+        </Link>
+      )}
     </article>
   );
 };

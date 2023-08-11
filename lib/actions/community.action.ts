@@ -103,17 +103,7 @@ export async function fetchCommunityPosts(id: string) {
   }
 }
 
-export async function fetchCommunities({
-  searchString = "",
-  pageNumber = 1,
-  pageSize = 20,
-  sortBy = "desc",
-}: {
-  searchString?: string;
-  pageNumber?: number;
-  pageSize?: number;
-  sortBy?: SortOrder;
-}) {
+export async function fetchCommunities({ searchString = "", pageNumber = 1, pageSize = 20, sortBy = "desc" }: { searchString?: string; pageNumber?: number; pageSize?: number; sortBy?: SortOrder }) {
   try {
     connectToDB();
 
@@ -128,21 +118,14 @@ export async function fetchCommunities({
 
     // If the search string is not empty, add the $or operator to match either username or name fields.
     if (searchString.trim() !== "") {
-      query.$or = [
-        { username: { $regex: regex } },
-        { name: { $regex: regex } },
-      ];
+      query.$or = [{ username: { $regex: regex } }, { name: { $regex: regex } }];
     }
 
     // Define the sort options for the fetched communities based on createdAt field and provided sort order.
     const sortOptions = { createdAt: sortBy };
 
     // Create a query to fetch the communities based on the search and sort criteria.
-    const communitiesQuery = Community.find(query)
-      .sort(sortOptions)
-      .skip(skipAmount)
-      .limit(pageSize)
-      .populate("members");
+    const communitiesQuery = Community.find(query).sort(sortOptions).skip(skipAmount).limit(pageSize).populate("members");
 
     // Count the total number of communities that match the search criteria (without pagination).
     const totalCommunitiesCount = await Community.countDocuments(query);
@@ -159,10 +142,7 @@ export async function fetchCommunities({
   }
 }
 
-export async function addMemberToCommunity(
-  communityId: string,
-  memberId: string
-) {
+export async function addMemberToCommunity(communityId: string, memberId: string) {
   try {
     connectToDB();
 
@@ -201,18 +181,12 @@ export async function addMemberToCommunity(
   }
 }
 
-export async function removeUserFromCommunity(
-  userId: string,
-  communityId: string
-) {
+export async function removeUserFromCommunity(userId: string, communityId: string) {
   try {
     connectToDB();
 
     const userIdObject = await User.findOne({ id: userId }, { _id: 1 });
-    const communityIdObject = await Community.findOne(
-      { id: communityId },
-      { _id: 1 }
-    );
+    const communityIdObject = await Community.findOne({ id: communityId }, { _id: 1 });
 
     if (!userIdObject) {
       throw new Error("User not found");
@@ -223,16 +197,10 @@ export async function removeUserFromCommunity(
     }
 
     // Remove the user's _id from the members array in the community
-    await Community.updateOne(
-      { _id: communityIdObject._id },
-      { $pull: { members: userIdObject._id } }
-    );
+    await Community.updateOne({ _id: communityIdObject._id }, { $pull: { members: userIdObject._id } });
 
     // Remove the community's _id from the communities array in the user
-    await User.updateOne(
-      { _id: userIdObject._id },
-      { $pull: { communities: communityIdObject._id } }
-    );
+    await User.updateOne({ _id: userIdObject._id }, { $pull: { communities: communityIdObject._id } });
 
     return { success: true };
   } catch (error) {
@@ -242,20 +210,12 @@ export async function removeUserFromCommunity(
   }
 }
 
-export async function updateCommunityInfo(
-  communityId: string,
-  name: string,
-  username: string,
-  image: string
-) {
+export async function updateCommunityInfo(communityId: string, name: string, username: string, image: string) {
   try {
     connectToDB();
 
     // Find the community by its _id and update the information
-    const updatedCommunity = await Community.findOneAndUpdate(
-      { id: communityId },
-      { name, username, image }
-    );
+    const updatedCommunity = await Community.findOneAndUpdate({ id: communityId }, { name, username, image });
 
     if (!updatedCommunity) {
       throw new Error("Community not found");

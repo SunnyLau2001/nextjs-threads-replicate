@@ -2,7 +2,7 @@ import UserCard from "@/components/cards/UserCard";
 import ProfileHeader from "@/components/shared/ProfileHeader";
 import ThreadsTab from "@/components/shared/ThreadsTab";
 import { profileTabs } from "@/constants";
-import { fetchUserPosts } from "@/lib/actions/thread.action";
+import { fetchUserPosts } from "@/lib/actions/user.action";
 import { fetchUser, fetchUsers } from "@/lib/actions/user.action";
 import { currentUser } from "@clerk/nextjs";
 import Image from "next/image";

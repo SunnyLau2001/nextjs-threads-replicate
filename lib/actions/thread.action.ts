@@ -130,3 +130,29 @@ export async function addCommentToThread(threadId: string, commentText: string, 
     revalidatePath(path);
   } catch (error) {}
 }
+
+export async function fetchUserPosts(userId: string) {
+  try {
+    connectToDB();
+    // Find all threads authored by the user with the given userId
+
+    // TODO: populate community id
+    const threads = await User.findOne({ id: userId }).populate({
+      path: "threads",
+      model: Thread,
+      populate: {
+        path: "children",
+        model: Thread,
+        populate: {
+          path: "author",
+          model: User,
+          select: "name image id",
+        },
+      },
+    });
+
+    return threads;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user posts: ${error.message}`);
+  }
+}

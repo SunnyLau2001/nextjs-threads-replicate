@@ -42,13 +42,13 @@ export async function fetchUser(userId: string) {
     connectToDB();
 
     return await User.findOne({
-      ud: userId,
+      id: userId,
     });
     // .populate({
     //   path:'communities',
     //   model: Community,
     // })
   } catch (error: any) {
-    throw new Error (`Failed to fetch user: ${error.message}`)
+    throw new Error(`Failed to fetch user: ${error.message}`);
   }
 }
